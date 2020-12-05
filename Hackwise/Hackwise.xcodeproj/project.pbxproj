@@ -15,6 +15,7 @@
 		1408D135257B2E5B00480B4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1408D133257B2E5B00480B4D /* LaunchScreen.storyboard */; };
 		1408D140257B2E5C00480B4D /* HackwiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408D13F257B2E5C00480B4D /* HackwiseTests.swift */; };
 		1408D14B257B2E5C00480B4D /* HackwiseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408D14A257B2E5C00480B4D /* HackwiseUITests.swift */; };
+		1408D15C257B36A500480B4D /* stepsHistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408D15B257B36A500480B4D /* stepsHistoryTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		1408D146257B2E5C00480B4D /* HackwiseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HackwiseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1408D14A257B2E5C00480B4D /* HackwiseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackwiseUITests.swift; sourceTree = "<group>"; };
 		1408D14C257B2E5C00480B4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1408D15B257B36A500480B4D /* stepsHistoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stepsHistoryTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				1408D131257B2E5B00480B4D /* Assets.xcassets */,
 				1408D133257B2E5B00480B4D /* LaunchScreen.storyboard */,
 				1408D136257B2E5B00480B4D /* Info.plist */,
+				1408D15B257B36A500480B4D /* stepsHistoryTableViewController.swift */,
 			);
 			path = Hackwise;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1408D15C257B36A500480B4D /* stepsHistoryTableViewController.swift in Sources */,
 				1408D12D257B2E5900480B4D /* ViewController.swift in Sources */,
 				1408D129257B2E5900480B4D /* AppDelegate.swift in Sources */,
 				1408D12B257B2E5900480B4D /* SceneDelegate.swift in Sources */,
