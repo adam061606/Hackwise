@@ -15,6 +15,93 @@ extension Date {
         return df.string(from: self)
     }
 }
+
+extension NSMutableAttributedString {
+    var fontSize:CGFloat { return 25 }
+    var boldFont:UIFont { return UIFont.boldSystemFont(ofSize: fontSize) }
+    var normalFont:UIFont { return UIFont.systemFont(ofSize: fontSize)}
+
+    func boldGreen(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font : boldFont,
+            .foregroundColor : UIColor.systemGreen
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+    
+    func boldRed(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font : boldFont,
+            .foregroundColor : UIColor.systemRed
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+    
+    func boldBlue(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font : boldFont,
+            .foregroundColor : UIColor.systemBlue
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+
+    func normal(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font : normalFont,
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+    /* Other styling methods */
+    func orangeHighlight(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font :  normalFont,
+            .foregroundColor : UIColor.white,
+            .backgroundColor : UIColor.orange
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+
+    func blackHighlight(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font :  normalFont,
+            .foregroundColor : UIColor.white,
+            .backgroundColor : UIColor.black
+
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+
+    func underlined(_ value:String) -> NSMutableAttributedString {
+
+        let attributes:[NSAttributedString.Key : Any] = [
+            .font :  normalFont,
+            .underlineStyle : NSUnderlineStyle.single.rawValue
+
+        ]
+
+        self.append(NSAttributedString(string: value, attributes:attributes))
+        return self
+    }
+}
+
 //extension UIColor {
 //    const pink = UIColor(red: 252.0/255.0, green: 141.0/255.0, blue: 165.0/255.0, alpha: 1.0)
 //}
@@ -27,14 +114,32 @@ class ViewController: UIViewController {
     @IBOutlet weak var welcomeBG: UILabel!
     @IBOutlet weak var dateText: UILabel!
     @IBOutlet weak var stepsLabel: UILabel!
+    @IBOutlet weak var stepsTotalLabel: UILabel!
+    @IBOutlet weak var goals: UIButton!
     
     var goalSteps: Int = 10000
+    var steps = Int()
+    var totalStepsAllTime = Int()
 //    @IBOutlet weak var CircularProgress: CircularProgressView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        dateText.text = "\(Calendar.current.component(.day, from: Date())) \(Date().monthAsString()), \(Calendar.current.component(.year, from: Date()))"
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        goals.layer.cornerRadius = 10
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy"
+        var dateComponents = DateComponents()
+        dateComponents.year = 1980
+        dateComponents.month = 7
+        dateComponents.day = 11
+        let userCalendar = Calendar.current
+        let currentDateString: String = dateFormatter.string(from: date/*userCalendar.date(from: dateComponents)!*/)
+        dateText.text = currentDateString
         let cp = CircularProgressView(frame: CGRect(x: 80.0, y: 80.0, width: 300.0, height: 300.0))
         cp.trackColor = UIColor.systemGray4
         cp.progressColor = UIColor.systemBlue
@@ -45,13 +150,16 @@ class ViewController: UIViewController {
         self.perform(#selector(animateProgress), with: nil, afterDelay: 0.5)
         welcomeBG.layer.cornerRadius = 30
         welcomeBG.layer.masksToBounds = true
+        stepsLabel.center.x = self.view.center.x
+        stepsLabel.center.y = self.view.center.y+40
         //        CircularProgress.trackColor = UIColor.white
 //        CircularProgress.progressColor = UIColor.purple
 //        CircularProgress.setProgressWithAnimation(duration: 1.0, value: 0.3)
-        if let stepTarget = defaults.integer(forKey: "stepTarget") {
-            goalSteps = stepTarget
+        if defaults.object(forKey: "stepsTarget") != nil {
+            goalSteps = defaults.integer(forKey: "stepsTarget")
         } else {
             goalSteps = 10000
+            defaults.setValue(goalSteps, forKey: "stepsTarget")
         }
         // Access Step Count
         let healthKitTypes: Set = [ HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)! ]
@@ -61,9 +169,15 @@ class ViewController: UIViewController {
                 // Authorization Successful
                 self.getTodaysSteps { (result) in
                     DispatchQueue.main.async {
-                        let stepCount = String(Int(result))
-                        print(stepCount)
-                        self.stepsLabel.text = String(stepCount)
+//                        let stepCount = String(Int(result))
+//                        print(stepCount)
+                        self.steps = Int(result)
+                        self.stepsLabel.attributedText =
+                            self.steps >= self.goalSteps ? NSMutableAttributedString().boldGreen("\(self.steps)").normal("/").boldBlue("\(self.goalSteps)").normal("\nsteps") : NSMutableAttributedString().boldRed("\(self.steps)").normal("/").boldBlue("\(self.goalSteps)").normal("\nsteps")
+                        defaults.setValue(self.steps, forKey: "stepsToday")
+                        defaults.setValue(self.steps, forKey: "totalSteps")
+                        self.totalStepsAllTime = defaults.integer(forKey: "totalSteps")
+                        self.stepsTotalLabel.text = self.totalStepsAllTime > 1 ? "You have walked \(self.totalStepsAllTime) steps so far" : "You have walked \(self.totalStepsAllTime) step so far"
                     }
                 }
             } // end if
@@ -90,7 +204,8 @@ class ViewController: UIViewController {
     
     @objc func animateProgress() {
         let cP = self.view.viewWithTag(1) as! CircularProgressView
-        cP.setProgressWithAnimation(duration: 1.0, value: 0.7)
+        Int() < self.goalSteps ?
+            cP.setProgressWithAnimation(duration: 1.0, value: Float(Double(self.steps)/Double(self.goalSteps))) : cP.setProgressWithAnimation(duration: 1.0, value: 1.0)
     }
 
 

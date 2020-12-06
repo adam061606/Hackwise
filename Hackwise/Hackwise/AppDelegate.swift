@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Hackwise
 //
-//  Created by Adam Tan on 5/12/20.
+//  Created by Granwyn Tan on 5/12/20.
 //
 
 import UIKit
@@ -14,7 +14,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        NotificationCenter.default.addObserver(self, selector: #selector(dayChanged(notification:)), name: UIApplication.significantTimeChangeNotification, object: nil)
         return true
+    }
+    
+    @objc func dayChanged(notification: NSNotification){
+        print("Next Day")
+        if defaults.object(forKey: "stepsToday") != nil {
+            defaults.setValue(defaults.integer(forKey: "stepsToday"), forKey: "totalSteps")
+            defaults.removeObject(forKey: "stepsToday")
+        }
     }
 
     // MARK: UISceneSession Lifecycle
